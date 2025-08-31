@@ -92,6 +92,12 @@ Process finished with exit code 0
 ```
 
 
+# VIDEO EXPLANATION!
+
+https://app.screencastify.com/watch/HcigFHZFKaMiGGLBupsC 
+
+
+
 
 
 
