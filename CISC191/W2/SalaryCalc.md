@@ -6,8 +6,7 @@
 
 # Flowchart
 
-<img width="424" height="936" alt="image" src="https://github.com/user-attachments/assets/d7087793-510c-4345-87f1-b2df87c4597b" />
-
+<img width="289" height="611" alt="SalaryCalculator drawio" src="https://github.com/user-attachments/assets/9b17843d-3444-4a73-ab34-e18e4a49a72c" />
 
 
 # Explanation of my code.
@@ -60,6 +59,9 @@ Code organization: Keeping the code clean and readable while implementing all re
 
 
 # Here is my code!
+
+
+## Task A
 
 ### TaxTableTools.java
 
@@ -188,5 +190,117 @@ Process finished with exit code 0
 ```
 
 
+# Task B
+
+```.java
+import java.util.Scanner;
+
+public class ConstructorOverload {
+
+    private int [] search;
+    private double [] value;
+    private int nEntries;
+
+    // Default constructor
+    public ConstructorOverload () {
+        search = new int[]{0, 20000, 50000, 100000, Integer.MAX_VALUE};
+        value = new double[]{0.0, 0.10, 0.20, 0.30, 0.40};
+        nEntries = search.length;
+    }
+
+    // Overloaded constructor
+    public ConstructorOverload(int[] searchTable, double[] valueTable) {
+        search = searchTable;
+        value = valueTable;
+        nEntries = search.length;
+    }
+
+    public int getInteger(Scanner input, String prompt) {
+        int inputValue;
+
+        System.out.println(prompt + ": ");
+        inputValue = input.nextInt();
+
+        return inputValue;
+    }
+
+    public double getValue(int searchArgument) {
+        double result = 0.0;
+        boolean keepLooking = true;
+        int i = 0;
+
+        while ((i < nEntries) && keepLooking) {
+            if (searchArgument <= search[i]) {
+                result = value[i];
+                keepLooking = false;
+            }
+            else {
+                ++i;
+            }
+        }
+
+        return result;
+    }
+}
+
+
+
+
+```
+
+```.java
+
+import java.util.Scanner;
+
+public class IncomeTaxMain2 {
+    public static void main(String [] args) {
+        final String PROMPT_SALARY = "\nEnter annual salary (-1 to exit)";
+        Scanner scnr = new Scanner(System.in);
+        int annualSalary;
+        double taxRate;
+        int taxToPay;
+
+        // Modified salary and tax tables
+        int []    salaryRange  = {   0,  30000,  60000,  Integer.MAX_VALUE };
+        double [] taxRates     = { 0.0,  0.25,   0.35,               0.45 };
+
+        // Use overloaded constructor
+        ConstructorOverload table = new ConstructorOverload(salaryRange, taxRates);
+
+        annualSalary = table.getInteger(scnr, PROMPT_SALARY);
+
+        while (annualSalary >= 0) {
+            taxRate = table.getValue(annualSalary);
+            taxToPay= (int)(annualSalary * taxRate);
+            System.out.println("Annual Salary: " + annualSalary +
+                    "\tTax rate: " + taxRate +
+                    "\tTax to pay: " + taxToPay);
+
+            annualSalary = table.getInteger(scnr, PROMPT_SALARY);
+        }
+    }
+}
+
+```
+
+
+# Output
+
+
+```.java
+
+
+Enter annual salary (-1 to exit): 
+250000
+Annual Salary: 250000	Tax rate: 0.45	Tax to pay: 112500
+
+Enter annual salary (-1 to exit): 
+-1
+
+Process finished with exit code 0
+
+```
 ## Video Explanation of Code!
 
+
+https://app.screencastify.com/watch/GdzFKbWIFJ3ev6pWHt30
