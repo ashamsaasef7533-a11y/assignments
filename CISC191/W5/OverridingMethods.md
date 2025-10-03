@@ -6,14 +6,38 @@
 # Here is the flowchart!
 
 
+<img width="521" height="922" alt="image" src="https://github.com/user-attachments/assets/a2d86edd-5730-411d-aaf1-ec6f6a1a43bc" />
 
 
 
 ## Explanation of my code.
 
+The code demonstrates method overriding in Java inheritance:
+
+Book Class: Base class with basic book properties and a printInfo() method
+
+Encyclopedia Class: Derived class that:
+
+Adds two new fields (edition and numberOfPages)
+
+Overrides the printInfo() method to include the additional fields
+
+Uses getter methods to access private fields from the parent class
+
+Main Class: Handles input reading and object creation
+
+The key concept shown is method overriding - the Encyclopedia class provides its own implementation of printInfo() that extends the functionality of the base class method while maintaining the same method signature.
 
 ## Challenges
 
+Challenges Faced
+Input Handling: Reading multiple lines of input in the correct order for both Book and Encyclopedia objects
+
+Method Overriding: Ensuring the overridden printInfo() method in Encyclopedia properly calls the base class method while adding new functionality
+
+Access Control: Managing private fields with appropriate getters/setters while maintaining encapsulation
+
+Input Order: Keeping track of which input corresponds to which field, especially when reading both Book and Encyclopedia data sequentially
 
 
 
