@@ -5,10 +5,10 @@
 ### CISC Week 7 Assignments
 
 # Flowchart
+<img width="330" height="639" alt="image" src="https://github.com/user-attachments/assets/bf079e20-d792-4f72-b6bd-6e6a06e3f051" />
 
 
 # Explanation of my code.
-The program works as follows:
 
 Input Processing: Reads a string and converts it to lowercase for case-insensitive comparison
 
