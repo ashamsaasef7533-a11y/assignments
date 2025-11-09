@@ -1,4 +1,4 @@
-# GUI input and ActionListeners
+# GUI input and formatted text fields
 
 ### Armaan Shamsaasef
 ### Date: 11/9/2025
