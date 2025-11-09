@@ -7,223 +7,148 @@
 
 # Here is the flowchart!
 
-<img width="569" height="930" alt="image" src="https://github.com/user-attachments/assets/eb987e39-b9ea-4d76-8634-95f6d182174e" />
+<img width="839" height="899" alt="image" src="https://github.com/user-attachments/assets/d7e38479-15b0-4767-b3e0-6a69f6008feb" />
 
 
 ## Explanation of my code.
 
-This Java program creates a simple GUI salary calculator that takes user input for hourly wage and weekly hours through text fields. When the user clicks the Calculate button, the program reads both input values, validates they are positive numbers, then computes the yearly salary by multiplying hourly wage by hours per week by 52 weeks. The result is displayed formatted as currency in the interface, with error handling for invalid inputs like non-numbers or negative values. The entire application runs in a single window with a clean, user-friendly layout.
+This Java program creates a distance converter GUI that takes a single input of miles through a formatted text field. When the user clicks the Convert button, the program reads the mile value and performs three simultaneous conversions: miles to kilometers using the factor 1.60934, kilometers to meters by multiplying by 1000, and miles to feet using the factor 5280. The results are instantly displayed in three separate labeled fields, allowing users to see all converted distances at once. The formatted text field ensures only valid numeric input is accepted, making the interface user-friendly and error-resistant.
 
 ## Challenges
 
-GUI Layout Management: Deciding between different layout managers (FlowLayout vs GridLayout) to create an intuitive interface
+JFormattedTextField Setup: Configuring the NumberFormatter with proper bounds and validation rules required careful research
 
-Event Handling: Ensuring the ActionListener properly captures button clicks and retrieves input data
+Conversion Accuracy: Ensuring the distance conversion factors were precise and correctly applied
 
-Input Validation: Handling potential NumberFormatException when users enter non-numeric values
+Layout Management: Arranging multiple result labels clearly while maintaining a clean interface
 
-Component Positioning: Arranging labels, text fields, and button in a visually appealing way
+Input Validation: Using formatted text field to restrict input to valid numbers while providing user feedback
 
-Error Handling: Implementing try-catch blocks to gracefully handle invalid input
+Number Formatting: Properly displaying results with consistent decimal formatting for all units
 
 ## This is my code!
 
 ```.java
 
 import javax.swing.*;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 
-public class SalaryCalculatorGUI extends JFrame {
-    private JTextField hourlyWageField;
-    private JTextField hoursPerWeekField;
-    private JLabel resultLabel;
+public class DistanceConverter extends JFrame {
+    private JFormattedTextField milesField;
+    private JLabel kmResult, metersResult, feetResult;
 
-    public SalaryCalculatorGUI() {
+    public DistanceConverter() {
         // Set up the main window
-        setTitle("Salary Calculator");
+        setTitle("Distance Converter");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 300);
+        setSize(700, 700);
         setLocationRelativeTo(null);
 
         // Create main panel
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
+        mainPanel.setLayout(new GridLayout(6, 1, 10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Title
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        gbc.insets = new Insets(0, 0, 20, 0);
-        JLabel titleLabel = new JLabel("Calculate Yearly Salary");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        mainPanel.add(titleLabel, gbc);
+        JLabel titleLabel = new JLabel("Distance Converter", JLabel.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        mainPanel.add(titleLabel);
 
-        // Hourly Wage
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.anchor = GridBagConstraints.EAST;
-        mainPanel.add(new JLabel("Hourly Wage:"), gbc);
+        // Input label
+        JLabel inputLabel = new JLabel("Enter Distance in Miles:", JLabel.CENTER);
+        mainPanel.add(inputLabel);
 
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        hourlyWageField = new JTextField(15);
-        mainPanel.add(hourlyWageField, gbc);
+        // Formatted text field for miles input
+        NumberFormat format = NumberFormat.getNumberInstance();
+        NumberFormatter formatter = new NumberFormatter(format);
+        formatter.setValueClass(Double.class);
+        formatter.setMinimum(0.0);
+        formatter.setMaximum(10000.0);
+        formatter.setAllowsInvalid(false);
 
-        // Hours per Week
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.EAST;
-        mainPanel.add(new JLabel("Hours per Week:"), gbc);
+        milesField = new JFormattedTextField(formatter);
+        milesField.setValue(0.0);
+        milesField.setHorizontalAlignment(JTextField.CENTER);
+        milesField.setFont(new Font("Arial", Font.PLAIN, 24));
+        mainPanel.add(milesField);
 
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.WEST;
-        hoursPerWeekField = new JTextField(15);
-        mainPanel.add(hoursPerWeekField, gbc);
+        // Convert button
+        JButton convertButton = new JButton("Convert Distance");
+        convertButton.setFont(new Font("Arial", Font.BOLD, 24));
+        mainPanel.add(convertButton);
 
-        // Calculate Button
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        gbc.insets = new Insets(20, 5, 20, 5);
-        gbc.anchor = GridBagConstraints.CENTER;
-        JButton calculateButton = new JButton("Calculate Yearly Salary");
-        calculateButton.setFont(new Font("Arial", Font.BOLD, 14));
-        calculateButton.setPreferredSize(new Dimension(200, 35));
-        mainPanel.add(calculateButton, gbc);
+        // Results panel
+        JPanel resultsPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+        kmResult = new JLabel("Kilometers: 0.00 km", JLabel.CENTER);
+        metersResult = new JLabel("Meters: 0.00 m", JLabel.CENTER);
+        feetResult = new JLabel("Feet: 0.00 ft", JLabel.CENTER);
 
-        // Result Label
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 2;
-        gbc.insets = new Insets(10, 5, 5, 5);
-        resultLabel = new JLabel("Yearly Salary will appear here");
-        resultLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        resultLabel.setForeground(Color.BLUE);
-        resultLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        mainPanel.add(resultLabel, gbc);
+        // Style result labels
+        kmResult.setFont(new Font("Arial", Font.BOLD, 24));
+        metersResult.setFont(new Font("Arial", Font.BOLD, 24));
+        feetResult.setFont(new Font("Arial", Font.BOLD, 24));
+        kmResult.setForeground(Color.BLUE);
+        metersResult.setForeground(Color.BLUE);
+        feetResult.setForeground(Color.BLUE);
 
-        // Add action listener with debug output
-        calculateButton.addActionListener(new ActionListener() {
+        resultsPanel.add(kmResult);
+        resultsPanel.add(metersResult);
+        resultsPanel.add(feetResult);
+        mainPanel.add(resultsPanel);
+
+        // Add action listener to the button
+        convertButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Calculate button clicked!"); // Debug
-                calculateSalary();
+                convertDistance();
             }
         });
 
-        // Also add Enter key listeners to text fields
-        ActionListener enterListener = new ActionListener() {
+        // Also convert when Enter is pressed in the text field
+        milesField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Enter key pressed!"); // Debug
-                calculateSalary();
+                convertDistance();
             }
-        };
-
-        hourlyWageField.addActionListener(enterListener);
-        hoursPerWeekField.addActionListener(enterListener);
+        });
 
         add(mainPanel);
     }
 
-    private void calculateSalary() {
-        System.out.println("calculateSalary method called!"); // Debug
-
+    private void convertDistance() {
         try {
-            // Get input values
-            String wageText = hourlyWageField.getText().trim();
-            String hoursText = hoursPerWeekField.getText().trim();
+            // Get the value from formatted text field
+            double miles = ((Number) milesField.getValue()).doubleValue();
 
-            System.out.println("Wage text: '" + wageText + "'"); // Debug
-            System.out.println("Hours text: '" + hoursText + "'"); // Debug
+            // Perform conversions
+            double kilometers = miles * 1.60934;
+            double meters = kilometers * 1000;
+            double feet = miles * 5280;
 
-            // Validate that fields are not empty
-            if (wageText.isEmpty() || hoursText.isEmpty()) {
-                resultLabel.setText("Please enter values in both fields");
-                resultLabel.setForeground(Color.RED);
-                JOptionPane.showMessageDialog(this,
-                        "Please enter values for both fields.",
-                        "Input Required",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
+            // Update result labels with formatted numbers
+            kmResult.setText(String.format("Kilometers: %.2f km", kilometers));
+            metersResult.setText(String.format("Meters: %.2f m", meters));
+            feetResult.setText(String.format("Feet: %.2f ft", feet));
 
-            // Parse input values
-            double hourlyWage = Double.parseDouble(wageText);
-            double hoursPerWeek = Double.parseDouble(hoursText);
-
-            System.out.println("Parsed values: " + hourlyWage + ", " + hoursPerWeek); // Debug
-
-            // Validate positive values
-            if (hourlyWage <= 0 || hoursPerWeek <= 0) {
-                resultLabel.setText("Please enter positive numbers");
-                resultLabel.setForeground(Color.RED);
-                JOptionPane.showMessageDialog(this,
-                        "Please enter positive numbers greater than zero.",
-                        "Invalid Input",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Validate reasonable hours
-            if (hoursPerWeek > 168) {
-                resultLabel.setText("Hours cannot exceed 168 per week");
-                resultLabel.setForeground(Color.RED);
-                JOptionPane.showMessageDialog(this,
-                        "Hours per week cannot exceed 168.",
-                        "Invalid Input",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Calculate yearly salary
-            double yearlySalary = hourlyWage * hoursPerWeek * 52;
-
-            // Display result
-            String formattedSalary = String.format("$%,.2f", yearlySalary);
-            resultLabel.setText("Yearly Salary: " + formattedSalary);
-            resultLabel.setForeground(Color.BLUE);
-
-            System.out.println("Calculation successful: " + formattedSalary); // Debug
-
-        } catch (NumberFormatException e) {
-            resultLabel.setText("Please enter valid numbers");
-            resultLabel.setForeground(Color.RED);
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                    "Please enter valid numbers in both fields.",
+                    "Please enter a valid number for miles.",
                     "Input Error",
                     JOptionPane.ERROR_MESSAGE);
-            System.out.println("NumberFormatException caught"); // Debug
         }
     }
 
     public static void main(String[] args) {
-        // Use try-catch to handle any initialization errors
-        try {
-            System.out.println("Starting application..."); // Debug
-
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    SalaryCalculatorGUI calculator = new SalaryCalculatorGUI();
-                    calculator.setVisible(true);
-                    System.out.println("GUI is now visible"); // Debug
-                }
-            });
-
-        } catch (Exception e) {
-            System.err.println("Error starting application: " + e.getMessage());
-            e.printStackTrace();
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new DistanceConverter().setVisible(true);
+            }
+        });
     }
 }
 
@@ -231,28 +156,9 @@ public class SalaryCalculatorGUI extends JFrame {
 
 ## This is my result!
 
-<img width="377" height="284" alt="image" src="https://github.com/user-attachments/assets/8cefa218-39c0-45b3-ad24-65a32b87eb1a" />
+<img width="678" height="686" alt="image" src="https://github.com/user-attachments/assets/c9e985c1-d9e3-46b5-8dbf-9783ed8503be" />
 
-
-<img width="375" height="287" alt="image" src="https://github.com/user-attachments/assets/9b046e2c-f08d-4e2b-99b0-5d8f5fd3757d" />
-
-
-```.out
-
-Starting application...
-GUI is now visible
-Calculate button clicked!
-calculateSalary method called!
-Wage text: '100'
-Hours text: '40'
-Parsed values: 100.0, 40.0
-Calculation successful: $208,000.00
-
-Process finished with exit code 0
-
-
-```
-
+<img width="674" height="661" alt="image" src="https://github.com/user-attachments/assets/70c64b04-851e-4d0e-a53d-9bf0d9558e5b" />
 
 # VIDEO EXPLANATION!
 
